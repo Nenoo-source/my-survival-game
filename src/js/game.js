@@ -1,6 +1,8 @@
 import '../css/style.css'
 import { Actor, Engine, Vector, DisplayMode } from "excalibur"
 import { Resources, ResourceLoader } from './resources.js'
+import { Level } from './levelone.js'
+
 
 export class Game extends Engine {
 
@@ -14,12 +16,10 @@ export class Game extends Engine {
         this.start(ResourceLoader).then(() => this.startGame())
     }
 
-    startGame() {
-        console.log("start de game!")
-
+   startGame() {
+        this.add('level', new Level())
+        this.goToScene('level')
     }
-
-
 }
 
 new Game()
