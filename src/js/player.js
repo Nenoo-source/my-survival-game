@@ -1,16 +1,24 @@
-import { Actor, Vector, Keys } from "excalibur";
+import { Actor, Vector, Keys, Color, CollisionType } from "excalibur";
 import { Resources } from "./resources.js";
 import { Bullet } from "./bullet.js";
 import { Zombie } from "./zombie.js";
+import { SpeedZombie } from "./speed-zombie.js";
 
 export class Player extends Actor {
     speed = 200;
     facingVector = new Vector(1, 0);
 
+    health = 100;
+    maxHealth = 100;
+    ammo = 30;
+    maxAmmo = 30;
+    score = 0;
+
     constructor(myposx = 640, myposy = 360) {
         super({
             width: 64,
-            height: 64
+            height: 64,
+            collisionType: CollisionType.Active // nodig om onCollisionStart te krijgen
         });
         this.pos = new Vector(myposx, myposy);
     }
@@ -18,6 +26,15 @@ export class Player extends Actor {
     onInitialize() {
         this.graphics.use(Resources.Player.toSprite());
         this.scale = new Vector(0.8, 0.8);
+
+        // healthbar (zelfde patroon als de Shark in les 6)
+        this.healthbar = new Actor({
+            x: -40, y: -50,
+            width: 80, height: 10,
+            color: Color.Green,
+            anchor: new Vector(0, 0)
+        });
+        this.addChild(this.healthbar);
     }
 
     onPostUpdate(engine) {
@@ -54,8 +71,35 @@ export class Player extends Actor {
     }
 
     shoot() {
+        if (this.ammo <= 0) return; // geen ammo meer
+
+        this.ammo--;
+        this.scene.ui.updateAmmo(this.ammo);
+
         let bullet = new Bullet(this.pos.x, this.pos.y, this.facingVector);
         this.scene.add(bullet);
-    
+    }
+
+    addScore(points) {
+        this.score += points;
+        this.scene.ui.updateScore(this.score);
+    }
+
+    pickupAmmo(amount) {
+        this.ammo = Math.min(this.maxAmmo, this.ammo + amount);
+        this.scene.ui.updateAmmo(this.ammo);
+    }
+
+    onCollisionStart(event, other) {
+        if (other.owner instanceof Zombie || other.owner instanceof SpeedZombie) {
+            this.health -= other.owner.damage;
+            this.healthbar.scale = new Vector(Math.max(this.health, 0) / this.maxHealth, 1);
+            other.owner.kill(); // voorkomt dat dezelfde zombie elke frame opnieuw schade doet
+
+            if (this.health <= 0) {
+                this.scene.engine.finalScore = this.score;
+                this.scene.engine.goToScene("gameover");
+            }
+        }
     }
 }

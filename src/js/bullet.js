@@ -30,6 +30,7 @@ export class Bullet extends Actor {
         if (other.owner instanceof Zombie || other.owner instanceof SpeedZombie) {
             other.owner.kill();
             this.kill();
+            this.scene.myplayer.addScore(10); // punten voor de speler
         }   
     }
 }
