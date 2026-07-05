@@ -9,7 +9,7 @@ export class AmmoPickup extends Actor {
         super({
             width: 16,
             height: 16,
-            scale: new Vector(1.2, 1.2), // iets groter dan een kogel
+            scale: new Vector(0.22, 0.22), // iets groter dan een kogel
             collisionType: CollisionType.Passive
         });
         this.pos = new Vector(x, y);
@@ -18,7 +18,7 @@ export class AmmoPickup extends Actor {
     onInitialize() {
         // hergebruikt voorlopig de bullet-sprite, zet hier je eigen ammo-plaatje
         // in resources.js zodra je er een hebt
-        this.graphics.use(Resources.Bullet.toSprite());
+        this.graphics.use(Resources.AmmoPickup.toSprite());
     }
 
     onCollisionStart(event, other) {

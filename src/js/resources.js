@@ -9,6 +9,7 @@ const Resources = {
     //TankZombie: new ImageSource('/images/tank-zombie.png'),
     Background: new ImageSource('/images/zsg-background.jpg'),
     Bullet: new ImageSource('/images/bullet.png'),
+    AmmoPickup: new ImageSource('/images/ammo.png'),
 }
 
 
