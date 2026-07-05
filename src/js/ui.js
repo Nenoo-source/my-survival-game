@@ -3,6 +3,7 @@ import { ScreenElement, Actor, Label, Font, FontUnit, Color, Vector } from "exca
 // ScreenElement i.p.v. Actor -> blijft vast op het scherm staan,
 // ook als de camera de speler over een grote map volgt.
 export class UI extends ScreenElement {
+   
     onInitialize() {
         this.scoreLabel = new Label({
             text: "Score: 0",
@@ -11,7 +12,15 @@ export class UI extends ScreenElement {
         });
         this.addChild(this.scoreLabel);
  
-        // Healthbar direct onder de Score.
+        
+        this.ammoLabel = new Label({
+            text: "Ammo: 30",
+            pos: new Vector(20, 85),
+            font: new Font({ family: "Arial", size: 24, unit: FontUnit.Px, color: Color.White })
+        });
+        this.addChild(this.ammoLabel);
+        
+        
         this.healthBarBackground = new Actor({
             x: 20, y: 50,
             width: 160, height: 16,
@@ -27,13 +36,6 @@ export class UI extends ScreenElement {
             anchor: new Vector(0, 0)
         });
         this.addChild(this.healthBar);
- 
-        this.ammoLabel = new Label({
-            text: "Ammo: 30",
-            pos: new Vector(20, 85),
-            font: new Font({ family: "Arial", size: 24, unit: FontUnit.Px, color: Color.White })
-        });
-        this.addChild(this.ammoLabel);
     }
  
     updateScore(score) {
