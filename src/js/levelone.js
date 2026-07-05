@@ -4,6 +4,7 @@ import { Player } from './player.js';
 import { Zombie } from './zombie.js';
 import { SpeedZombie } from './speed-zombie.js';
 import { AmmoPickup } from './ammo-pickup.js';
+import { Medkit } from './medkit.js';
 import { UI } from './ui.js';
 import { Resources } from "./resources.js";
 
@@ -17,6 +18,9 @@ export class Level extends Scene {
 
     ammoSpawnTimer = 0;
     ammoSpawnInterval = 300; // ~5 seconden
+
+    medkitSpawnTimer = 0;
+    medkitSpawnInterval = 900; // ~15 seconden bij 60fps
 
     onInitialize(engine) {
         this.background = new Background();
@@ -60,6 +64,12 @@ export class Level extends Scene {
             this.ammoSpawnTimer = 0;
             this.spawnAmmoPickup();
         }
+
+        this.medkitSpawnTimer++;
+        if (this.medkitSpawnTimer >= this.medkitSpawnInterval) {
+            this.medkitSpawnTimer = 0;
+            this.spawnMedkit();
+        }
     }
 
     // laat een zombie net buiten het zichtbare scherm verschijnen
@@ -97,6 +107,12 @@ export class Level extends Scene {
         const x = Math.random() * MAP_WIDTH;
         const y = Math.random() * MAP_HEIGHT;
         this.add(new AmmoPickup(x, y));
+    }
+
+    spawnMedkit() {
+        const x = Math.random() * MAP_WIDTH;
+        const y = Math.random() * MAP_HEIGHT;
+        this.add(new Medkit(x, y));
     }
 
     countZombies() {

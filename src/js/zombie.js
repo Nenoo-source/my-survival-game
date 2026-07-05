@@ -1,5 +1,6 @@
 import { Actor, Vector } from "excalibur";
 import { Resources } from "./resources.js";
+import { facingRotation } from "./direction.js";
 
 export class Zombie extends Actor {
     damage = 15 // health die de speler verliest bij een aanraking
@@ -17,5 +18,9 @@ export class Zombie extends Actor {
         this.graphics.use(Resources.Zombie.toSprite())
         // trager dan de speler (speed 200) -> te ontlopen
         this.actions.meet(this.scene.myplayer, 90)
+    }
+    onPostUpdate(engine) {
+        const toPlayer = this.scene.myplayer.pos.sub(this.pos);
+        this.rotation = facingRotation(toPlayer);
     }
 }

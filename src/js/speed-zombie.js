@@ -1,5 +1,6 @@
 import { Actor, Vector } from "excalibur";
 import { Resources } from "./resources.js";
+import { facingRotation } from "./direction.js";
 
 export class SpeedZombie extends Actor {
     damage = 15
@@ -18,5 +19,9 @@ export class SpeedZombie extends Actor {
         // sneller dan de speler (speed 200) -> lastig te ontlopen
         // (stond hier eerst ook op 100, dus exact even snel als Zombie!)
         this.actions.meet(this.scene.myplayer, 140)
+    }
+    onPostUpdate(engine) {
+        const toPlayer = this.scene.myplayer.pos.sub(this.pos);
+        this.rotation = facingRotation(toPlayer);
     }
 }

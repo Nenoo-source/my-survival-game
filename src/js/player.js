@@ -3,6 +3,7 @@ import { Resources } from "./resources.js";
 import { Bullet } from "./bullet.js";
 import { Zombie } from "./zombie.js";
 import { SpeedZombie } from "./speed-zombie.js";
+import { facingRotation } from "./direction.js";
 
 export class Player extends Actor {
     speed = 200;
@@ -64,6 +65,8 @@ export class Player extends Actor {
         }
 
         this.vel = new Vector(xspeed, yspeed);
+        this.rotation = facingRotation(this.facingVector);
+        this.healthbar.rotation = +this.rotation; // balk blijft rechtop staan
 
         if (kb.wasPressed(Keys.Space)) {
             this.shoot();
@@ -88,6 +91,11 @@ export class Player extends Actor {
     pickupAmmo(amount) {
         this.ammo = Math.min(this.maxAmmo, this.ammo + amount);
         this.scene.ui.updateAmmo(this.ammo);
+    }
+
+    heal(amount) {
+        this.health = Math.min(this.maxHealth, this.health + amount);
+        this.healthbar.scale = new Vector(this.health / this.maxHealth, 1);
     }
 
     onCollisionStart(event, other) {
