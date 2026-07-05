@@ -1,16 +1,15 @@
-import { ImageSource, Sound, Resource, Loader } from 'excalibur'
+import { ImageSource, Loader } from 'excalibur'
 
-// voeg hier jouw eigen resources toe
+// Voeg hier jouw eigen resources toe
 const Resources = {
-Zombie: new ImageSource('./images/small-zombie.png'),
-Player: new ImageSource('./images/speed-zombie.png'),
-//SpeedZombie: new ImageSource('./images/speed-zombie.png'),
-//TankZombie: new ImageSource('./images/tank-zombie.png'),
-Background: new ImageSource('./images/zsg-background.png'),
-//Gun1: new Sound('./sounds/gun1.wav'),
+    Zombie: new ImageSource('/images/small-zombie.png'),
+    Player: new ImageSource('/images/jeff-idle.png'),
+    PlayerFire: new ImageSource('/image/jeff-shooting.png'),
+    SpeedZombie: new ImageSource('/images/speed-zombie.png'),
+    //TankZombie: new ImageSource('/images/tank-zombie.png'),
+    Background: new ImageSource('/images/zsg-background.jpg'),
+    Bullet: new ImageSource('/images/bullet.png'),
 }
-
-
 
 
 const ResourceLoader = new Loader()

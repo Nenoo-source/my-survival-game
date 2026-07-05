@@ -1,59 +1,61 @@
-import { Actor, Vector, Keys, randomInRange } from "excalibur";
+import { Actor, Vector, Keys } from "excalibur";
 import { Resources } from "./resources.js";
+import { Bullet } from "./bullet.js";
+import { Zombie } from "./zombie.js";
 
 export class Player extends Actor {
-speed = 200
+    speed = 200;
+    facingVector = new Vector(1, 0);
 
-    constructor(myplayer) {
+    constructor(myposx = 640, myposy = 360) {
         super({
-            width: Resources.Player.width,
-            height: Resources.Player.height,
-            pos: new Vector(640, 390),
-        })
+            width: 64,
+            height: 64
+        });
+        this.pos = new Vector(myposx, myposy);
+    }
 
-        this.graphics.use(Resources.Player.toSprite())
-        this.scale = new Vector(0.5, 0.5);
-        console.log("I am a player")
+    onInitialize() {
+        this.graphics.use(Resources.Player.toSprite());
+        this.scale = new Vector(0.8, 0.8);
     }
 
     onPostUpdate(engine) {
-        let kb = engine.input.keyboard
-        let xspeed = 0
-        let yspeed = 0
-       
+        let kb = engine.input.keyboard;
+        let xspeed = 0;
+        let yspeed = 0;
 
-        // WASD besturing
-        if (kb.isHeld(Keys.W || Keys.Up || Keys.ArrowUp)) {
-            yspeed = -this.speed
+        if (kb.isHeld(Keys.W) || kb.isHeld(Keys.Up)) {
+            yspeed = -this.speed;
+            this.facingVector = new Vector(0, -1);
         }
-        if (kb.isHeld(Keys.S || Keys.Down || Keys.ArrowDown)) {
-            yspeed = +this.speed
+        if (kb.isHeld(Keys.S) || kb.isHeld(Keys.Down)) {
+            yspeed = this.speed;
+            this.facingVector = new Vector(0, 1);
         }
-        if (kb.isHeld(Keys.A || Keys.Left || Keys.ArrowLeft)) {
-            xspeed = -this.speed
+        if (kb.isHeld(Keys.A) || kb.isHeld(Keys.Left)) {
+            xspeed = -this.speed;
+            this.facingVector = new Vector(-1, 0);
         }
-        if (kb.isHeld(Keys.D || Keys.Right || Keys.ArrowRight)) {
-            xspeed = +this.speed
+        if (kb.isHeld(Keys.D) || kb.isHeld(Keys.Right)) {
+            xspeed = this.speed;
+            this.facingVector = new Vector(1, 0);
         }
-        this.vel = new Vector(xspeed, yspeed)
 
-        if (engine.input.keyboard.wasPressed(Keys.Space)) {
-            //this.shoot()
+        if (xspeed !== 0 && yspeed !== 0) {
+            this.facingVector = new Vector(xspeed, yspeed).normalize();
+        }
+
+        this.vel = new Vector(xspeed, yspeed);
+
+        if (kb.wasPressed(Keys.Space)) {
+            this.shoot();
         }
     }
 
-    /*shoot() {
-        let bubble = new Bubble(this.pos.x, this.pos.y, this.playerNum)
-        this.scene.add(bubble)
-    }*/
-
-
-    // haai eet vis en update score
-    //onCollisionStart(event, other) {
-    /*if (other.owner instanceof Fish) {
-    other.owner.kill()
-        console.log(`Shark ${this.playerNum} ate a fish! Score: ${this.fishEaten}`)
-    }*/
-    //if (other.owner instanceof Mine) {
+    shoot() {
+        let bullet = new Bullet(this.pos.x, this.pos.y, this.facingVector);
+        this.scene.add(bullet);
+    
+    }
 }
-

@@ -1,50 +1,36 @@
-import { Scene, Actor, Engine, Vector, DisplayMode, } from "excalibur"
-import { Resources, ResourceLoader } from './resources.js'
-import { Zombie } from './zombie.js'
-import { Player } from './player.js'
+import { Scene, BoundingBox } from "excalibur";
+import { Background } from './background.js';
+import { Player } from './player.js';
+import { Zombie } from './zombie.js';
+import { SpeedZombie } from './speed-zombie.js';
+import { Resources } from "./resources.js";
+
 export class Level extends Scene {
     onInitialize(engine) {
-    Scene.Camera
+        this.background = new Background();
+        this.add(this.background);
      
-        // camera volgen player
-        Scene.Camera.strategy.lockToActor(this.myplayer)
-        
+        this.myplayer = new Player();
+        this.add(this.myplayer);
 
-        let background = new Actor({ anchor: new Vector(0, 0) })
-        background.graphics.use(Resources.Background.toSprite())
-        this.add(background)
-
-        // voeg player toe 
-        this.myplayer = new Player()
-        this.add(this.myplayer)
-
-         //voeg x zombies toe 
+        // Spawn zombies binnen de echte map grenzen (1920 x 1080)
         for (let i = 0; i < 20; i++) {
-            this.add(new Zombie())
+            let z = new Zombie();
+            z.pos.setTo(Math.random() * 1800 + 50, Math.random() * 1000 + 50);
+            this.add(z);
         }
 
+        for (let i = 0; i < 10; i++) {
+            let sz = new SpeedZombie();
+            sz.pos.setTo(Math.random() * 1800 + 50, Math.random() * 1000 + 50);
+            this.add(sz);
+        }
+
+        // HIER ZETTEN WE DE CAMERA VAST:
+        this.camera.strategy.lockToActor(this.myplayer);
         
-    }
-
-    onPostUpdate(engine) {
-
-        // if (this.myplayer.pos.x < 0) {
-        //     this.myplayer.pos.x = 0
-        // }
-        // if (this.myplayer.pos.x > 1280) {
-        //     this.myplayer.pos.x = 1280
-        // }
-        // if (this.myplayer.pos.y < 0) {
-        //     this.myplayer.pos.y = 0
-        // }
-        // if (this.myplayer.pos.y > 720) {
-        //     this.myplayer.pos.y = 720
-        // }
-        // engine.camera.strategy.lockToActor(this.myplayer)
-        // engine.camera.strategy.lockToActor(this.myplayer)
-    }
-
-    onActivate(ctx) {
-        console.log("reset het level")
+        
+        // De camera mag niet buiten deze box kijken (0 t/m 1920 breed, 0 t/m 1080 hoog)
+        //this.camera.strategy.limitCameraBounds(new BoundingBox(0, 0, 1920, 1080));
     }
 }
